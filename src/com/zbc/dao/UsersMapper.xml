@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zbc.dao.UsersMapper">
+
+   <select id="getUsersById" resultType="com.zbc.pojo.Users">
+       select
+       `id` as `id`,
+       `userName` as `userName`,
+       `password` as `password`,
+       `realName` as `realName`
+       from `users`
+       <trim prefix="where" prefixOverrides="and | or">
+           <if test="id != null">
+               and `id`=#{id}
+           </if>
+       </trim>
+   </select>
+
+   <select id="getUsersListByMap" resultType="com.zbc.pojo.Users"
+           parameterType="java.util.Map">
+           select
+           `id` as `id`,
+           `userName` as `userName`,
+           `password` as `password`,
+           `realName` as `realName`
+           from `users`
+       <trim prefix="where" prefixOverrides="and | or">
+           <if test="id != null">
+               and `id` = #{id} 
+           </if>
+           <if test="userName != null and userName!=''">
+               and `userName` =#{userName}
+           </if>
+           <if test="password != null and password!=''">
+               and `password` =#{password}
+           </if>
+           <if test="realName != null and realName!=''">
+               and `realName` like CONCAT('%',#{realName},'%') 
+           </if>
+       </trim>
+   </select>
+   
+   <select id="getUsersRecordCount" resultType="int" parameterType="java.util.Map">
+			select count(1) from `users`
+		<trim prefix="where" prefixOverrides="and | or">
+           <if test="id != null">
+               and `id` = #{id} 
+           </if>
+           <if test="userName != null and userName!=''">
+               and `userName` like CONCAT('%',#{userName},'%') 
+           </if>
+           <if test="password != null and password!=''">
+               and `password` like CONCAT('%',#{password},'%') 
+           </if>
+           <if test="realName != null and realName!=''">
+               and `realName` like CONCAT('%',#{realName},'%') 
+           </if>
+       </trim>
+   </select>
+
+   <insert id="insertUsers" parameterType="com.zbc.pojo.Users">
+       insert into `users`(
+              		`userName`,
+              		`password`,
+              		`realName`
+       )
+       values(
+              		#{userName},
+              		#{password},
+              		#{realName}
+       )
+   </insert>
+
+   <update id="updateUsers" parameterType="com.zbc.pojo.Users">
+       update `users`
+       <trim prefix="set" suffixOverrides="," suffix="where `id`=#{id}">
+           <if test="userName != null and userName!=''">       
+               `userName`=#{userName},
+           </if>
+           <if test="password != null and password!=''">       
+               `password`=#{password},
+           </if>
+           <if test="realName != null and realName!=''">       
+               `realName`=#{realName}
+           </if>
+       </trim>
+   </update>
+
+   <delete id="deleteUsersById" parameterType="Integer">
+       delete from `users` where `id` = #{id}
+   </delete>
+</mapper>

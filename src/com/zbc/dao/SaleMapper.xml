@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zbc.dao.SaleMapper">
+
+   <select id="getSaleById" resultType="com.zbc.pojo.Sale">
+       select
+       `id` as `id`,
+       `price` as `price`,
+       `quantity` as `quantity`,
+       `totalPrice` as `totalPrice`,
+       `saleDate` as `saleDate`,
+       `userId` as `userId`,
+       `productId` as `productId`
+       from `sale`
+       <trim prefix="where" prefixOverrides="and | or">
+           <if test="id != null">
+               and `id`=#{id}
+           </if>
+       </trim>
+   </select>
+
+   <select id="getSaleListByMap" resultType="com.zbc.pojo.Sale"
+           parameterType="java.util.Map">
+           select
+           s.`id` as `id`,
+           `price` as `price`,
+           s.`quantity` as `quantity`,
+           `totalPrice` as `totalPrice`,
+           `saleDate` as `saleDate`,
+           `userId` as `userId`,
+           `productId` as `productId`, userName,
+           productName
+           from `sale` s INNER JOIN product p ON p.id=s.productId INNER JOIN users u ON  u.id=s.userId  
+       <trim prefix="where" prefixOverrides="and | or">
+           <if test="id != null">
+               and `id` = #{id} 
+           </if>
+           <if test="price != null">
+               and `price` = #{price} 
+           </if>
+           <if test="quantity != null">
+               and `quantity` = #{quantity} 
+           </if>
+           <if test="totalPrice != null">
+               and `totalPrice` = #{totalPrice} 
+           </if>
+           <if test="saleDate != null">
+               and `saleDate` = #{saleDate} 
+           </if>
+           <if test="userId != null">
+               and `userId` = #{userId} 
+           </if>
+           <if test="productId != null">
+               and `productId` = #{productId} 
+           </if>
+       </trim>
+          ORDER BY `saleDate` DESC
+   </select>
+   
+   <select id="getSaleRecordCount" resultType="int" parameterType="java.util.Map">
+			select count(1) from `sale`
+		<trim prefix="where" prefixOverrides="and | or">
+           <if test="id != null">
+               and `id` = #{id} 
+           </if>
+           <if test="price != null">
+               and `price` = #{price} 
+           </if>
+           <if test="quantity != null">
+               and `quantity` = #{quantity} 
+           </if>
+           <if test="totalPrice != null">
+               and `totalPrice` = #{totalPrice} 
+           </if>
+           <if test="saleDate != null">
+               and `saleDate` = #{saleDate} 
+           </if>
+           <if test="userId != null">
+               and `userId` = #{userId} 
+           </if>
+           <if test="productId != null">
+               and `productId` = #{productId} 
+           </if>
+       </trim>
+   </select>
+
+   <insert id="insertSale" parameterType="com.zbc.pojo.Sale">
+       insert into `sale`(
+              		`price`,
+              		`quantity`,
+              		`totalPrice`,
+              		`saleDate`,
+              		`userId`,
+              		`productId`
+       )
+       values(
+              		#{price},
+              		#{quantity},
+              		#{totalPrice},
+              		#{saleDate},
+              		#{userId},
+              		#{productId}
+       )
+   </insert>
+
+   <update id="updateSale" parameterType="com.zbc.pojo.Sale">
+       update `sale`
+       <trim prefix="set" suffixOverrides="," suffix="where `id`=#{id}">
+           <if test="price != null">       
+               `price`=#{price},
+           </if>
+           <if test="quantity != null">       
+               `quantity`=#{quantity},
+           </if>
+           <if test="totalPrice != null">       
+               `totalPrice`=#{totalPrice},
+           </if>
+           <if test="saleDate != null">       
+               `saleDate`=#{saleDate},
+           </if>
+           <if test="userId != null">       
+               `userId`=#{userId},
+           </if>
+           <if test="productId != null">       
+               `productId`=#{productId}
+           </if>
+       </trim>
+   </update>
+
+   <delete id="deleteSaleById" parameterType="Integer">
+       delete from `sale` where `id` = #{id}
+   </delete>
+</mapper>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zbc.dao.ProductMapper">
+
+   <select id="getProductById" resultType="com.zbc.pojo.Product">
+       select
+       `id` as `id`,
+       `productName` as `productName`,
+       `quantity` as `quantity`
+       from `product`
+       <trim prefix="where" prefixOverrides="and | or">
+           <if test="id != null">
+               and `id`=#{id}
+           </if>
+       </trim>
+   </select>
+
+   <select id="getProductListByMap" resultType="com.zbc.pojo.Product"
+           parameterType="java.util.Map">
+           select
+           `id` as `id`,
+           `productName` as `productName`,
+           `quantity` as `quantity`
+           from `product`
+       <trim prefix="where" prefixOverrides="and | or">
+           <if test="id != null">
+               and `id` = #{id} 
+           </if>
+           <if test="productName != null and productName!=''">
+               and `productName` =#{productName}
+           </if>
+           <if test="quantity != null">
+               and `quantity` = #{quantity} 
+           </if>
+       </trim>
+   </select>
+   
+   <select id="getProductRecordCount" resultType="int" parameterType="java.util.Map">
+			select count(1) from `product`
+		<trim prefix="where" prefixOverrides="and | or">
+           <if test="id != null">
+               and `id` = #{id} 
+           </if>
+           <if test="productName != null and productName!=''">
+               and `productName` like CONCAT('%',#{productName},'%') 
+           </if>
+           <if test="quantity != null">
+               and `quantity` = #{quantity} 
+           </if>
+       </trim>
+   </select>
+
+   <insert id="insertProduct" parameterType="com.zbc.pojo.Product">
+       insert into `product`(
+              		`productName`,
+              		`quantity`
+       )
+       values(
+              		#{productName},
+              		#{quantity}
+       )
+   </insert>
+
+   <update id="updateProduct" parameterType="com.zbc.pojo.Product">
+       update `product`
+       <trim prefix="set" suffixOverrides="," suffix="where `id`=#{id}">
+           <if test="productName != null and productName!=''">       
+               `productName`=#{productName},
+           </if>
+           <if test="quantity != null">       
+               `quantity`=#{quantity}
+           </if>
+       </trim>
+   </update>
+
+   <delete id="deleteProductById" parameterType="Integer">
+       delete from `product` where `id` = #{id}
+   </delete>
+</mapper>
